@@ -29,9 +29,10 @@ var (
 )
 
 type lmay struct {
-	textinput textinput.Model
-	stage     Stage
-	err       error
+	textInput    textinput.Model
+	matchedFiles []string
+	stage        Stage
+	err          error
 }
 
 func InitialModel() lmay {
@@ -43,7 +44,7 @@ func InitialModel() lmay {
 	ti.TextStyle = standardStyle
 
 	return lmay{
-		textinput: ti,
+		textInput: ti,
 		stage:     fileSelect,
 		err:       nil,
 	}
@@ -105,5 +106,5 @@ func writeSpacedText(b *strings.Builder, s string) {
 
 func writeHelpFooter(b *strings.Builder) {
 	b.WriteRune('\n')
-	writeSpacedText(b, helpStyle.Render("(esc) to quit"))
+	writeSpacedText(b, helpStyle.Render("(enter) to continue | (esc) to quit"))
 }

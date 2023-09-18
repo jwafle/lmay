@@ -27,7 +27,7 @@ func fileSelectView(m lmay) string {
 
 	writeSpacedText(&b, fmt.Sprintf(
 		"\n%s\n",
-		m.textinput.View(),
+		m.textInput.View(),
 	))
 
 	writeHelpFooter(&b)
@@ -45,7 +45,7 @@ func updateFileSelect(msg tea.Msg, m lmay) (lmay, tea.Cmd) {
 			return m, tea.Quit
 
 		case tea.KeyEnter:
-			err := validateFileExtension(m.textinput.Value())
+			err := validateFileExtension(m.textInput.Value())
 
 			if err != nil {
 				cmd = returnErrMsg(m, err)
@@ -57,6 +57,6 @@ func updateFileSelect(msg tea.Msg, m lmay) (lmay, tea.Cmd) {
 		}
 	}
 
-	m.textinput, cmd = m.textinput.Update(msg)
+	m.textInput, cmd = m.textInput.Update(msg)
 	return m, cmd
 }
