@@ -2,13 +2,14 @@ package model
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 var (
-	validFileExtensions = []string{".yaml", ".yml"}
+	validFileExtensions = []string{".go", ".yaml", ".yml"}
 )
 
 func validateFileExtension(filename string) error {
@@ -18,6 +19,24 @@ func validateFileExtension(filename string) error {
 		}
 	}
 	return fmt.Errorf("file extension not supported for file: %s", filename)
+}
+
+func generateRegex(filename string) (*regexp.Regexp, error) {
+	var b strings.Builder
+	b.WriteString(`\b`)
+	for _, char := range filename {
+		switch char {
+		case '.':
+			b.WriteString(`\.`)
+		case '*':
+			b.WriteString(`.*`)
+		default:
+			b.WriteRune(char)
+		}
+	}
+	b.WriteString(`\b`)
+
+	return regexp.Compile(b.String())
 }
 
 func fileSelectView(m lmay) string {
@@ -52,7 +71,14 @@ func updateFileSelect(msg tea.Msg, m lmay) (lmay, tea.Cmd) {
 				return m, cmd
 			}
 
-			m.stage = stepCreation
+			regex, err := generateRegex(m.textInput.Value())
+			if err != nil {
+				cmd = returnErrMsg(m, err)
+				return m, cmd
+			}
+
+			m.fileRegex = regex
+			m.stage = fileSearch
 			return m, cmd
 		}
 	}

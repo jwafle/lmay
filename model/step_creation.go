@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -10,6 +11,10 @@ func stepCreateView(m lmay) string {
 	var b strings.Builder
 
 	writeSpacedText(&b, "Welcome to the step creation view.")
+	writeSpacedText(&b, "Here are your matched files:")
+	for _, v := range m.matchedFiles {
+		writeSpacedText(&b, fmt.Sprintf("%s", v))
+	}
 
 	writeHelpFooter(&b)
 

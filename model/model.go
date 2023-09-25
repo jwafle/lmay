@@ -1,6 +1,7 @@
 package model
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -16,6 +17,7 @@ type (
 const (
 	userError Stage = iota
 	fileSelect
+	fileSearch
 	stepCreation
 	confirmation
 	execution
@@ -30,6 +32,7 @@ var (
 
 type lmay struct {
 	textInput    textinput.Model
+	fileRegex    *regexp.Regexp
 	matchedFiles []string
 	stage        Stage
 	err          error
@@ -69,6 +72,9 @@ func (m lmay) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case fileSelect:
 			m, cmd = updateFileSelect(msg, m)
 			return m, cmd
+		case fileSearch:
+			m, cmd = updateFileSearch(msg, m)
+			return m, cmd
 		case stepCreation:
 			m, cmd = updateStepCreation(msg, m)
 			return m, cmd
@@ -86,6 +92,8 @@ func (m lmay) View() string {
 		s = userErrorView(m)
 	case fileSelect:
 		s = fileSelectView(m)
+	case fileSearch:
+		s = fileSearchView(m)
 	case stepCreation:
 		s = stepCreateView(m)
 	}
